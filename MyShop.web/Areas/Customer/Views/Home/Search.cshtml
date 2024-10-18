@@ -1,0 +1,116 @@
+﻿@model IEnumerable<Product>
+@{
+    ViewData["Title"] = "Search";
+    Layout = "~/Views/Shared/_Customer.cshtml";
+}
+
+<h1 class="text-center">Search Results</h1>
+
+<style>
+    /* Card hover animation */
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 10px;
+        border: 1px solid #a67c52;
+    }
+
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Product image animation */
+    .card-img-top {
+        transition: transform 0.3s ease;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .card:hover .card-img-top {
+        transform: scale(1.05);
+    }
+
+    /* Background styling */
+    .search-results-container {
+        background-color: #f4efe9;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    /* Product name styling */
+    .fw-bolder {
+        color: #5c3d2e;
+    }
+
+    /* Product price styling */
+    .card-body p {
+        color: #5c3d2e;
+    }
+
+    /* Button styling */
+    .btn-outline-dark {
+        color: #5c3d2e;
+        border-color: #5c3d2e;
+    }
+
+    .btn-outline-dark:hover {
+        background-color: #5c3d2e;
+        color: #fff;
+    }
+
+    /* Footer button styling */
+    .card-footer .btn {
+        background-color: #a67c52;
+        color: #fff;
+    }
+
+    .card-footer .btn:hover {
+        background-color: #5c3d2e;
+        color: #fff;
+    }
+</style>
+
+<div class="search-results-container my-5">
+    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+        @foreach (var product in Model)
+        { 
+            <div class="col mb-5">
+                <div class="card h-100 mt-5 mb-5">
+                    <!-- Product image-->
+                    <a href="/Customer/Home/Details/@product.Id">
+                        <img class="card-img-top" src="~/@product.Image" width="450px" height="300px" alt="@product.Name" />
+                    </a>
+                    <!-- Product details-->
+                    <div class="card-body p-4">
+                        <div class="text-center">
+                            <!-- Product name-->
+                            <h5 class="fw-bolder">@product.Name</h5>
+                            <!-- Product price-->
+                            @product.Price.ToString("C")
+                        </div>
+                    </div>
+                    <!-- Product actions-->
+                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                        <div class="text-center">
+                            <form asp-action="Details" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="ProductId" value="@product.Id" />
+                                <input type="hidden" name="Count" value="1" />
+                                <button class="btn btn-outline-dark flex-shrink-0 my-3" type="submit" style="background-color: #8b5e34; color: #fff;">
+                                    <i class="bi-cart-fill me-1"></i>
+                                    اضف الي العربه
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent text-center m-5">
+        <a class="btn btn-outline-dark mt-auto" href="/Customer/Home/Index">
+            الصفحه الرئيسيه
+        </a>
+    </div>
+</div>

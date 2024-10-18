@@ -1,0 +1,52 @@
+﻿@model Order
+@{
+    ViewData["Title"] = "OrderConfirmation";
+   // Layout = "~/Views/Shared/_Customer.cshtml";
+}
+
+<div class="container my-5">
+    <div class="alert alert-success text-center">
+        <h4>@ViewBag.OrderStatusMessage</h4>
+    </div>
+
+    <div class="row"> 
+        <div class="col-12 text-center">
+            <h1 class="display-5">Order Confirmation</h1> <!-- Adjust font size for smaller screens -->
+            <br />
+            <img src="~/img/images.jpg" class="img-fluid" alt="Order Confirmation Image" style="max-width: 100%; height: auto;" />
+        </div>
+
+        <div class="col-12 text-center mt-4">
+            <h2 class="h3">Order Details</h2> <!-- Adjust font size for smaller screens -->
+            <p><strong>Order ID:</strong> @Model.Id</p>
+            <p><strong>Total Price:</strong> @Model.TotalPrice.ToString("C")</p>
+            <p><strong>Order Date:</strong> @Model.OrderDate.ToString("f")</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Additional styles for small and medium screens */
+    @@media (max-width: 768px) {
+        h1.display-5 {
+            font-size: 1.75rem; /* Smaller font size for small screens */
+        }
+
+        h2.h3 {
+            font-size: 1.5rem; /* Smaller font size for small screens */
+        }
+
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .alert h4 {
+            font-size: 1.25rem;
+        }
+
+        img {
+            margin-bottom: 15px; /* Add spacing below the image */
+        }
+    }
+</style>

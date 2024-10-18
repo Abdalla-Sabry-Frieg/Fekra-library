@@ -1,0 +1,132 @@
+﻿@model IEnumerable<Product>
+@{
+    ViewData["Title"] = "allProducts";
+}
+
+<style>
+    /* Card hover animation */
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid #8b5e34;
+        background-color: #f4ece3;
+    }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(139, 94, 52, 0.3);
+        }
+
+    /* Product image animation */
+    .card-img-top {
+        transition: transform 0.3s ease;
+        border-bottom: 2px solid #8b5e34;
+    }
+
+    .card:hover .card-img-top {
+        transform: scale(1.05);
+    }
+
+    /* Background color for the section */
+    .bg-secondary {
+        background-color: #e0d4c1;
+    }
+
+    /* Button styles */
+    .btn-outline-dark {
+        border-color: #8b5e34;
+        color: #8b5e34;
+    }
+
+        .btn-outline-dark:hover {
+            background-color: #8b5e34;
+            color: #fff;
+        }
+</style>
+
+<div class="text-center  rounded-3 py-3 my-2">
+    <h2 style="background-color: #f4ece3;">All Products</h2>
+</div> 
+
+<div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center my-5 m-3 rounded-3" style="background-color: #f4ece3;">
+    @foreach (var product in Model)
+    {
+        <div class="col mb-5">
+            <div class="card h-100 mt-5 mb-5">
+                <!-- Product image-->
+              
+                    <img class="card-img-top img-fluid" src="~/@product.Image"  alt="@product.Name" />
+          
+                <!-- Product details-->
+                <div class="card-body p-4">
+                    <div class="text-center">
+                        <!-- Product name-->
+                        <h5 class="fw-bolder" style="color: #4a3f35;">@product.Name</h5>
+                        <!-- Product price-->
+                        <span style="color: #8b5e34;">@product.Price.ToString("C")</span>
+                    </div>
+                    <div class="text-center mt-3">
+                        <p style="color: #6d5c52;"><strong>@product.Description</strong></p>
+                    </div>
+                </div>
+                <!-- Product actions-->
+                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                    <div class="text-center">
+                        <form id="cartForm-@product.Id" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="ProductId" value="@product.Id" />
+                            <input type="hidden" name="Count" value="1" />
+                            <button class="btn btn-outline-dark flex-shrink-0 my-3" type="submit" style="background-color: #8b5e34; color: #fff;">
+                                <i class="bi-cart-fill me-1"></i>
+                                اضف الي العربه
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+    <div class="text-center">
+        <a class="btn btn-outline-dark mt-auto" href="/Customer/Home/Index">
+           الذهاب للصفحه الرئيسيه
+        </a>
+    </div>
+</div>
+<!-- Include SweetAlert and jQuery -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("form[id^='cartForm-']").submit(function (event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+
+            var form = $(this);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Details", "Home")', // Change to your controller and action
+                data: form.serialize(), // Serialize form data
+                success: function (response) {
+                    // Show SweetAlert on success
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "تم اضافه الطلب الي العربه",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                },
+                error: function () {
+                    // Show SweetAlert on error
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "حدث حطأ ما برجاء اعاده المحاوله !"
+                    });
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "NotFound";
+    Layout = "~/Views/Shared/_Customer.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <style>
+        body {
+            background-color: #f5f5f5; /* Light brown/gray background */
+            color: #4e342e; /* Dark brown text color */
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .image-fluid img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+
+        .btn-primary {
+            background-color: #8B4513; /* Brown color for button */
+            border-color: #8B4513; /* Matching border color */
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #6f3e1b; /* Darker brown for hover effect */
+            border-color: #6f3e1b;
+        }
+    </style>
+</head>
+<body>
+    <div class="image-fluid">
+        <img src="~/Images/lovepik-404-page-error-png-image_400217866_wh1200.png" alt="404 Not Found" />
+    </div>
+    <div class="container">
+        <a class="btn btn-primary" href="/Customer/Home/Index">الذهاب للصفحه الرئيسيه</a>
+    </div>
+</body>
+</html>

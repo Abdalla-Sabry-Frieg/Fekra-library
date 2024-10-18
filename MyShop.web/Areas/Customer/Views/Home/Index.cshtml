@@ -1,0 +1,186 @@
+﻿@model IEnumerable<CategoryProductsViewModel>
+
+<style>
+    /* Card hover animation */
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 10px;
+        border: 1px solid #a67c52;
+    }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+    .card-img-top {
+        transition: transform 0.3s ease;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .card:hover .card-img-top {
+        transform: scale(1.05);
+    }
+
+    .cover-image img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+
+    .category-section {
+        background-color: #f4efe9;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 50px;
+    }
+
+        .category-section h2 {
+            color: #5c3d2e;
+            border-bottom: 2px solid #a67c52;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+    .fw-bolder {
+        color: #5c3d2e;
+    }
+
+    .card-body p {
+        color: #5c3d2e;
+    }
+
+    .btn-outline-dark {
+        color: #5c3d2e;
+        border-color: #5c3d2e;
+    }
+
+        .btn-outline-dark:hover {
+            background-color: #5c3d2e;
+            color: #fff;
+        }
+
+    .card-footer .btn {
+        background-color: #a67c52;
+        color: #fff;
+    }
+
+        .card-footer .btn:hover {
+            background-color: #5c3d2e;
+            color: #fff;
+        }
+</style>
+
+<div class="cover-image">
+    <img src="~/cover400.png" alt="cover"  />
+</div>
+
+<section class="py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+        @foreach (var categoryProduct in Model)
+        { 
+            <div class="category-section mb-5 text-center">
+                <h2 class="my-4">@categoryProduct.Category.Name</h2>
+
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    @foreach (var product in categoryProduct.Products)
+                    {
+                        <div class="col mb-5 mt-5">
+                            <div class="card h-100">
+                                
+                                    <img class="card-img-top" src="~/@product.Image" width="450px" height="300px" alt="@product.Name" />
+
+                                <div class="card-body p-4">
+                                    <div class="text-center">
+                                        <h5 class="fw-bolder">@product.Name</h5>
+                                        @product.Price.ToString("C")
+                                    </div>
+                                </div>
+                                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                    <div class="text-center">
+                                        <form id="cartForm-@product.Id" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="ProductId" value="@product.Id" />
+                                            <input type="hidden" name="Count" value="1" />
+                                            @if (User.Identity.IsAuthenticated)
+                                            {
+                                                <button class="btn btn-outline-dark flex-shrink-0 my-3 add-to-cart" type="submit" style="background-color: #8b5e34; color: #fff;">
+                                                    <i class="bi-cart-fill me-1"></i>
+                                                    اضف الي العربه
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-outline-dark flex-shrink-0 my-3" type="button" onclick="redirectToLogin()" style="background-color: #8b5e34; color: #fff;">
+                                                    <i class="bi-cart-fill me-1"></i>
+                                                    اضف الي العربه
+                                                </button>
+                                            }
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @* Repeat for each product *@
+                </div>
+
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                        <div class="text-center">
+                            <a class="btn btn-outline-dark mt-auto" href="/Customer/Home/allProducts/@categoryProduct.Category.Id">
+                                عرض جميع المنتجات
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- Include SweetAlert and jQuery -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("form[id^='cartForm-']").submit(function (event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+
+            var form = $(this);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Details", "Home")', // Change to your controller and action
+                data: form.serialize(), // Serialize form data
+                success: function (response) {
+                    // Show SweetAlert on success
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "تم اضافه الطلب الي العربه",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                },
+                error: function () {
+                    // Show SweetAlert on error
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "حدث حطأ ما برجاء اعاده المحاوله  !"
+                    });
+                }
+            });
+        });
+    });
+</script>
+<script>
+    function redirectToLogin() {
+        // Redirect the user to the Microsoft Identity login page
+        window.location.href = '@Url.Action("Login", "Account", new { Area = "Identity" })';
+    }
+</script>
+

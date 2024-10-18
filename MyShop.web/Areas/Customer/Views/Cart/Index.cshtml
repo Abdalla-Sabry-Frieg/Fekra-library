@@ -1,0 +1,255 @@
+﻿@model ShoppingCartViewModel
+@using MyShop_Entities.Helper
+
+@{
+    // Layout = "~/Views/Shared/_Customer.cshtml"; // Reference to the _Customer layout
+}
+
+
+<style>
+    /* Your custom styles here */
+    body {
+        background-color: #f9f9f9; /* Light gray background for the entire page */
+    }
+
+    .gradient-custom {
+        background: linear-gradient(to right, #eaeaea, #f9f9f9); /* Very light gradient for the section */
+    }
+
+    .card {
+        border: 1px solid #a67c52; /* Brown border for the card */
+        border-radius: 10px; /* Rounded corners for the card */
+        background-color: #ffffff; /* White background for the card */
+    }
+
+    .card-header {
+        background-color: #d9c5a6; /* Light brown header background */
+        color: #4a3f35; /* Dark brown text color */
+    }
+
+    .card-body {
+        color: #4a3f35; /* Dark brown text color */
+    }
+
+    .btn-primary {
+        background-color: #a67c52; /* Brown button background */
+        border-color: #a67c52; /* Brown button border */
+    }
+
+        .btn-primary:hover {
+            background-color: #8b5e34; /* Darker brown on hover */
+            border-color: #8b5e34; /* Darker brown border on hover */
+        }
+
+    .bg-image img {
+        border: 2px solid #a67c52; /* Brown border for images */
+    }
+
+    .form-outline {
+        border: 1px solid #a67c52; /* Brown border for form outlines */
+        border-radius: 5px; /* Rounded corners for form outlines */
+    }
+
+    .form-label {
+        color: #4a3f35; /* Dark brown text color for labels */
+    }
+
+    .list-group-item {
+        border: 1px solid #a67c52; /* Brown border for list group items */
+        border-radius: 5px; /* Rounded corners for list group items */
+    }
+</style>
+
+<section class="h-100 gradient-custom">
+    <div class="container py-5">
+        <div class="row d-flex justify-content-center my-4">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header py-3 text-center">
+                        <h5 class="mb-0">محتويات السله</h5>
+                    </div>
+                    @foreach (var item in Model.CardList)
+                    {
+                        <!-- Start of Cart Item Container -->
+                        <div class="card-body" id="cart-item-@item.Id">
+                            <!-- Single item -->
+                            <div class="row">
+                                <div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
+                                    <!-- Image -->
+                                    <div class="bg-image hover-overlay hover-zoom ripple rounded" data-mdb-ripple-color="light">
+                                        <img src="~/@item.Product.Image" class="w-100" alt="Product Image" />
+                                        <a href="#!">
+                                            <div class="mask" style="background-color: rgba(251, 251, 251, 0.2)"></div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
+                                    <!-- Data -->
+                                    <p class="text-center text-white rounded-3 py-2" style="background-color: #8B5E3C;">
+                                        <strong>@item.Product.Name</strong>
+                                    </p>
+
+                                    <p><strong>@item.Product.Description</strong></p>
+                                    <p><strong>From Category: @item.Product.Category.Name</strong></p>
+
+                                    <a class="btn btn-primary btn-sm me-1 mb-2 btn-remove" data-cartid="@item.Id" title="Remove item">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+
+                                <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                                    <!-- Quantity -->
+                                    <div class="d-flex mb-4" style="max-width: 300px">
+                                        <a class="btn btn-primary px-3 ms-2 btn-plus" data-cartid="@item.Id">
+                                            <i class="bi bi-plus"></i>
+                                        </a>
+                                        <div class="form-outline text-center mx-2">
+                                            <span class="text-center" id="item-count-@item.Id">@item.Count</span><br />
+                                            <label class="form-label">Quantity</label>
+                                        </div>
+                                        <a class="btn btn-primary px-3 me-2 btn-minus" data-cartid="@item.Id">
+                                            <i class="bi bi-dash"></i>
+                                        </a>
+                                    </div>
+                                    <!-- Price -->
+                                    <p class="text-start text-md-center">
+                                        <strong>$@item.Product.Price</strong>
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- Single item -->
+                            <hr class="my-4" />
+                        </div>
+                        <!-- End of Cart Item Container -->
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header py-3 text-center">
+                        <h5 class="mb-0">التفاصيل</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                                الاجمالي
+                                <span id="total-price">@Model.TotalPrice</span>
+                            </li>
+
+                            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                                <div>
+                                    <strong>المبلغ المستحق</strong>
+                                    <strong>
+                                        <p class="mb-0">(شامل الضريبه)</p>
+                                    </strong>
+                                </div>
+                                <span id="total-price-val"><strong>@Model.TotalPrice</strong></span>
+                            </li>
+                        </ul>
+
+                        <a href="/Customer/Cart/Summary" class="btn btn-primary btn-lg btn-block text-center">
+                            محتويات الطلب
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).ready(function () {
+        // Increase product quantity
+        $('.btn-plus').off('click').click(function (e) {
+            e.preventDefault();
+            var cartId = $(this).data('cartid');
+
+            $.ajax({
+                url: '@Url.Action("plus", "Cart")',
+                type: 'POST',
+                data: { cartid: cartId },
+                success: function (response) {
+                    if (response.success) {
+                        // Update total price and item count
+                        $('#total-price').text(response.totalPrice);
+                        $('#total-price-val').text(response.totalPrice);
+                        $('#item-count-' + cartId).text(response.itemCount);
+                    } else {
+                        alert(response.message);
+                    }
+                }
+            });
+        });
+
+        // Decrease product quantity
+        $('.btn-minus').off('click').click(function (e) {
+            e.preventDefault();
+            var cartId = $(this).data('cartid');
+
+            $.ajax({
+                url: '@Url.Action("minuis", "Cart")',
+                type: 'POST',
+                data: { cartid: cartId },
+                success: function (response) {
+                    if (response.success) {
+                        // If the item was removed, hide the entire element from the DOM
+                        if (response.itemRemoved) {
+                            $('#cart-item-' + cartId).hide();
+                            // Reload the page to update the total price
+                            location.reload();
+                        } else {
+                            // Update total price and item count if item is still in the cart
+                            $('#total-price').text(response.totalPrice);
+                            $('#total-price-val').text(response.totalPrice);
+                            $('#item-count-' + cartId).text(response.itemCount);
+                        }
+                    } else {
+                        alert(response.message);
+                    }
+                }
+            });
+        });
+
+        // Remove product
+        $('.btn-remove').click(function (e) {
+            e.preventDefault();
+            var cartId = $(this).data('cartid');
+
+            Swal.fire({
+                title: 'هل انت متاكد?',
+                text: "لن تتمكن من الاسترجاع!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'نعم , قم بالحذف!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("Remove", "Cart")',
+                        type: 'POST',
+                        data: { cartId: cartId },
+                        success: function (response) {
+                            if (response.success) {
+                                // Hide the item from the DOM
+                                $('#cart-item-' + cartId).hide();
+                                $('#total-price').text(response.totalPrice);
+                                $('#total-price-val').text(response.totalPrice);
+                                Swal.fire('Removed!', response.message, 'success');
+                                // Reload the page to update the total price
+                                location.reload();
+                            } else {
+                                alert(response.message);
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>

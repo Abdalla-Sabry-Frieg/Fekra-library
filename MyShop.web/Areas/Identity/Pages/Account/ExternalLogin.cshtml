@@ -1,0 +1,35 @@
+﻿@page
+@model ExternalLoginModel
+@{
+    ViewData["Title"] = "تسجيل الدخول";
+}
+
+<h1 class="text-center mt-4">@ViewData["Title"]</h1>
+
+<div class="container mt-4">
+    <h2 class="text-center" id="external-login-title">ربط حسابك باستخدام <strong>@Model.ProviderDisplayName</strong></h2>
+    <hr />
+    <p id="external-login-description" class="text-info text-center">
+        لقد قمت بالمصادقة بنجاح باستخدام <strong>@Model.ProviderDisplayName</strong>.
+        يرجى إدخال عنوان بريد إلكتروني لهذا الموقع أدناه والنقر فوق الزر "تسجيل" لإكمال
+        تسجيل الدخول.
+    </p>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Email" class="form-control" autocomplete="email" placeholder="Please enter your email." />
+                    <label asp-for="Input.Email" class="form-label">البريد الإلكتروني</label>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <button type="submit" class="w-100 btn btn-lg btn-primary">تسجيل</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

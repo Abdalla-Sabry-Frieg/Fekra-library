@@ -1,0 +1,40 @@
+﻿@model Category
+@{
+    ViewBag.PageTitle = "التحكم في الفئات";
+    ViewBag.CardTitle = "انشاء فئه";
+    Layout = "~/Views/Shared/_Dashbord.cshtml";
+}
+
+
+
+<div class="row">
+    <div class="col-md-6 col-lg-4">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label asp-for="Image" class="form-label">الصوره</label>
+                <input type="file" asp-for="Image" class="form-control" id="imagfile" name="file" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="form-label">الاسم</label>
+                <input type="text" asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="form-label">الوصف</label>
+                <input type="text" asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group pt-3 pb-1">
+                <input type="submit" class="btn btn-primary" value="انشاء" />
+            </div>
+        </form>
+
+    </div>
+</div>
+<div>
+    <a asp-action="Index">الرجوع الي القائمه</a>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"></partial>
+}

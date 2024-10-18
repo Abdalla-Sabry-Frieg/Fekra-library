@@ -1,0 +1,47 @@
+﻿@page
+@model LoginWith2faModel
+@{
+    ViewData["Title"] = "المصادقة الثنائية";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="card shadow-sm p-4">
+                <h1 class="text-center mb-4">@ViewData["Title"]</h1>
+                <hr />
+                <p class="text-center">
+                    تم حماية تسجيل الدخول الخاص بك باستخدام تطبيق المصادقة. أدخل رمز المصادقة الخاص بك أدناه.
+                </p>
+                <form method="post" asp-route-returnUrl="@Model.ReturnUrl">
+                    <input asp-for="RememberMe" type="hidden" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.TwoFactorCode" class="form-control" autocomplete="off" />
+                        <label asp-for="Input.TwoFactorCode" class="form-label">رمز المصادقة الثنائية</label>
+                        <span asp-validation-for="Input.TwoFactorCode" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input asp-for="Input.RememberMachine" class="form-check-input" id="rememberMachineCheckBox" />
+                        <label asp-for="Input.RememberMachine" class="form-check-label" for="rememberMachineCheckBox">
+                            @Html.DisplayNameFor(m => m.Input.RememberMachine)
+                        </label>
+                    </div>
+
+                    <button type="submit" class="w-100 btn btn-lg btn-primary">تسجيل الدخول</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p class="text-center mt-3">
+    ليس لديك إمكانية الوصول إلى جهاز المصادقة الخاص بك؟ يمكنك
+    <a id="recovery-code-login" asp-page="./LoginWithRecoveryCode" asp-route-returnUrl="@Model.ReturnUrl">تسجيل الدخول باستخدام رمز الاسترداد</a>.
+</p>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

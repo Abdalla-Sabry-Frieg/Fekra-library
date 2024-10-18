@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Category>
+
+@{
+    ViewBag.PageTitle = "التحكم في الفئات";
+    ViewBag.CardTitle = "كل الفئات";
+    Layout = "~/Views/Shared/_Dashbord.cshtml";
+}
+
+<div>
+    <a class="btn btn-primary" asp-action="create">اضافه فئه جديده</a>
+</div>
+<hr />
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="text-bold">
+            <tr class="text-center">
+                <th scope="col">الصوره</th>
+                <th scope="col">الاسم</th>
+                <th scope="col">الوصف</th>
+                <th scope="col">وقت الانشاء</th>
+                <th scope="col">التحكم</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="text-center">
+                    <td>
+                        <img src="~/@item.Image" class="img-fluid" style="height:35px; width:35px;" alt="@item.Name" />
+                    </td>
+                    <td>@item.Name</td>
+                    <td>@item.Description</td>
+                    <td>@item.CreatedAt.ToString("g")</td>
+                    <td>
+                        <a class="btn btn-success btn-sm" asp-route-id="@item.Id" asp-action="Edit">تعديل</a>
+                        <a class="btn btn-danger btn-sm" asp-route-id="@item.Id" asp-action="Delete">حذف</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,88 @@
+﻿
+
+@page
+@using MyShop_Entities.Helper
+@model RegisterModel
+@{
+    ViewData["Title"] = "التسجيل";
+}
+
+<h1 class="text-center mt-3">@ViewData["Title"]</h1>
+
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <h2 class="text-center">إنشاء مستخدم جديد</h2>
+                <hr />
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Name" class="form-control" autocomplete="username" aria-required="true" placeholder="اكتب اسمك" />
+                    <label asp-for="Input.Name">الاسم</label>
+                    <span asp-validation-for="Input.Name" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                    <label asp-for="Input.Email">البريد الإلكتروني</label>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.City" class="form-control" autocomplete="username" aria-required="true" placeholder="اكتب اسم المدينه" />
+                    <label asp-for="Input.City">المدينه</label>
+                    <span asp-validation-for="Input.City" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Address" class="form-control" autocomplete="username" aria-required="true" placeholder="اكتب مكانك بالتحديد" />
+                    <label asp-for="Input.Address">العنوان</label>
+                    <span asp-validation-for="Input.Address" class="text-danger"></span>
+                </div>
+               
+                
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.PhoneNumber" class="form-control" autocomplete="PhoneNumber" aria-required="true" placeholder="01259648457" />
+                    <label asp-for="Input.Email">رقم الهاتف و الواتساب</label>
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                    <label asp-for="Input.Password">كلمة المرور</label>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                    <label asp-for="Input.ConfirmPassword">تأكيد كلمة المرور</label>
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+
+                @if (User.IsInRole(Helpers.AdminRole))
+                {
+                    <div class="mb-3">
+                        <label>اختر الدور:</label>
+                        <div class="form-check">
+                            <input type="radio" value="@Helpers.AdminRole" name="RoleRadio" class="form-check-input" />
+                            <label class="form-check-label">@Helpers.AdminRole</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" value="@Helpers.EditorRole" name="RoleRadio" class="form-check-input" />
+                            <label class="form-check-label">@Helpers.EditorRole</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" value="@Helpers.CustomerRole" name="RoleRadio" class="form-check-input" />
+                            <label class="form-check-label">@Helpers.CustomerRole</label>
+                        </div>
+                    </div>
+                }
+
+                <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">@((User.IsInRole(Helpers.AdminRole)) ? "Add New User" : "Register")</button>
+            </form>
+        </div>
+
+        <div class="col-12 col-md-6 text-center mt-4 mt-md-0">
+            <img src="~/img/login1.png" class="img-fluid" alt="Registration Image"/>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

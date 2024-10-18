@@ -1,0 +1,308 @@
+﻿@model ShoppingCartViewModel
+@using Microsoft.Extensions.Options
+@inject IOptions<MyShop_Entities.Helper.StripeSection> Stripe
+
+@{
+    Layout = "_Customer"; // Use the shared layout _Customer
+}
+<style>
+    main {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin: 10px 0;
+        background-color: #F5F5F5; /* Light brown/gray background for the page */
+        padding: 20px;
+        border-radius: 8px;
+    }
+    .billing-address, .cart-summary {
+        background: #fff;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        width: 100%;
+    }
+
+        .billing-address h2, .cart-summary h2 {
+            background-color: #d2b48c; /* Lighter brown color */
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+    /* Medium to large screens */
+    @@media (min-width: 768px) {
+        .billing-address, .cart-summary {
+            width: 45%; /* Adjusted to avoid gaps */
+            margin-bottom: 0;
+        }
+    }
+
+    /* Small screens */
+    @@media (max-width: 767px) {
+        .billing-address, .cart-summary {
+            width: 100%; /* Full width for small screens */
+        }
+
+        .cart-item {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+            .cart-item img {
+                margin-bottom: 10px;
+                width: auto;
+                height: auto;
+            }
+
+        .item-details {
+            margin-left: 0;
+            margin-bottom: 10px;
+        }
+
+        .item-quantity {
+            margin-top: 10px;
+            width: 100%;
+            text-align: center;
+        }
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #8B4513; /* Brown color for labels */
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #8B4513; /* Brown border color */
+            border-radius: 4px;
+        }
+
+        .form-group span.text-danger {
+            color: #dc3545; /* Bootstrap danger color */
+            font-size: 0.875em; /* Smaller font size for error messages */
+        }
+
+    .cart-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 15px;
+    }
+
+        .cart-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 4px;
+        }
+
+    .item-details {
+        flex: 1;
+        margin-left: 15px;
+    }
+
+    .order-summary p {
+        margin: 5px 0;
+    }
+
+   
+
+    .btn-primary {
+        background-color: #8B4513; /* Brown color for buttons */
+        border-color: #8B4513; /* Matching border color */
+    }
+
+        .btn-primary:hover {
+            background-color: #6f3e1b; /* Darker brown for hover effect */
+            border-color: #6f3e1b;
+        }
+
+    .btn-secondary {
+        background-color: #d2b48c; /* Lighter brown for secondary buttons */
+        border-color: #d2b48c;
+    }
+
+        .btn-secondary:hover {
+            background-color: #b29d7a; /* Darker shade for hover effect */
+            border-color: #b29d7a;
+        }
+</style>
+<div class="container m-3 mx-0">
+    <form asp-action="Summary" enctype="multipart/form-data">
+        <main>
+            <section class="billing-address m-3 p-3">
+                <h2 class="text-center mt-3 m-5 rounded-3 text-bg-light">العنوان بالتفصيل</h2>
+
+                <div class="form-group">
+                    <label asp-for="@Model.Order.Name">الاسم</label>
+                    <input type="text" id="name" placeholder="David Smith" asp-for="@Model.Order.Name" value="@Model.Order.Name" />
+                    <span asp-validation-for="@Model.Order.Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="@Model.Order.Email">البريد الاليكتروني</label>
+                    <input type="email" id="email" placeholder="david.343@gmail.com" asp-for="@Model.Order.Email" value="@Model.Order.Email" />
+                    <span asp-validation-for="@Model.Order.Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="@Model.Order.City">المدينه</label>
+                    <input type="text" id="city" placeholder="Houston" asp-for="@Model.Order.City" value="@Model.Order.City" />
+                    <span asp-validation-for="@Model.Order.City" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="@Model.Order.Address">العنوان بالتفصيل</label>
+                    <input type="text" id="address" placeholder="542 W.14th Street" asp-for="@Model.Order.Address" value="@Model.Order.Address" />
+                    <span asp-validation-for="@Model.Order.Address" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="@Model.Order.PhoneNumber">رقم الهاتف & WhatsApp</label>
+                    <input type="text" id="phone" placeholder="0182222635065" asp-for="@Model.Order.PhoneNumber" />
+                    <span asp-validation-for="@Model.Order.PhoneNumber" class="text-danger"></span>
+                </div>
+            </section>
+
+            <section class="cart-summary m-3 p-3">
+                <h2 class="text-center mt-3 m-5 rounded-3 text-bg-light">محتويات الطلب</h2>
+
+                @foreach (var item in Model.CardList)
+                {
+                    <div class="cart-item">
+                        <img src="~/@item.Product.Image" alt="@item.Product.Name" />
+                        <div class="item-details">
+                            <p class="text-center text-white rounded-3 py-2" style="background-color: #8B5E3C;">
+                                <strong>@item.Product.Name</strong>
+                            </p>
+
+                            <p><strong>@item.Product.Description</strong> </p>
+                            <p><strong> @item.Product.Category.Name : اسم الفئه</strong></p>
+
+                            <p id="item-price-@item.Id" class="item-price" data-price="@item.Product.Price">
+                                <strong>@item.Product.Price : السعر</strong>
+                            <p id="item-count-@item.Id" class="item-count" data-count="@item.Count">
+                                <strong>@item.Count : الكميه</strong>
+                            </p>
+                            <p>
+                                <strong>
+                                    الاجمالي:
+                                    <span id="total-price-@item.Id" class="total-price"> @item.Count * @item.Product.Price</span>
+                                </strong>
+                            </p>
+                            <a class="btn btn-primary btn-sm me-1 mb-2 btn-remove" data-cartid="@item.Id" title="Remove item">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                        
+                    </div>
+                    <hr />
+                }
+
+                <div class="order-summary">
+                    <strong>Total: @Model.TotalPrice.ToString("C")</strong>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a class="btn btn-secondary" href="/Customer/Home/Index">اكمل التسوق</a>
+                    <button type="submit" class="btn btn-primary" asp-action="Summary">تاكيد الطلب</button>
+                </div>
+            </section>
+        </main>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.getElementById('phone').addEventListener('blur', function () {
+            let phoneNumber = this.value.trim();
+            // Add country code if missing
+            if (phoneNumber && !phoneNumber.startsWith('20')) {
+                this.value = '20' + phoneNumber;
+            }
+        });
+    </script>
+
+   <script>
+    function calculateItemTotalPrice(itemId) {
+        // Get item price and count from the HTML
+        var itemPrice = parseFloat(document.getElementById('item-price-' + itemId).getAttribute('data-price'));
+        var itemCount = parseInt(document.getElementById('item-count-' + itemId).getAttribute('data-count'));
+
+        // Calculate the total price for the item
+        var totalPrice = itemPrice * itemCount;
+
+        // Update the displayed total price
+        document.getElementById('total-price-' + itemId).textContent = totalPrice.toFixed(2);
+    }
+
+    // Function to update all item total prices
+    function updateAllItemTotalPrices() {
+        // Find all items in the cart
+        var cartItems = document.querySelectorAll('.cart-item');
+
+        cartItems.forEach(function(cartItem) {
+            // Extract the item ID from the element
+            var itemId = cartItem.querySelector('.item-price').id.split('-')[2];
+
+            // Calculate and update the total price for each item
+            calculateItemTotalPrice(itemId);
+        });
+    }
+
+    // Example usage: call updateAllItemTotalPrices when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        updateAllItemTotalPrices();
+    });
+</script>
+
+
+    <script>
+        // Remove product
+        $('.btn-remove').click(function (e) {
+            e.preventDefault();
+            var cartId = $(this).data('cartid');
+
+            Swal.fire({
+                title: 'هل انت متاكد?',
+                text: "لن تتمكن من الاسترجاع!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'نعم , قم بالحذف!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("Remove", "Cart")',
+                        type: 'POST',
+                        data: { cartId: cartId },
+                        success: function (response) {
+                            if (response.success) {
+                                // Hide the item from the DOM
+                                $('#cart-item-' + cartId).hide();
+                                $('#total-price').text(response.totalPrice);
+                                $('#total-price-val').text(response.totalPrice);
+                                Swal.fire('Removed!', response.message, 'success');
+                                // Reload the page to update the total price
+                                location.reload();
+                            } else {
+                                alert(response.message);
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

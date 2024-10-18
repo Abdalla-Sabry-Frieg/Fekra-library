@@ -1,0 +1,55 @@
+﻿@model IEnumerable<ApplicationUser>
+
+@{
+    ViewBag.PageTitle = "اداره المستخدمين";
+    ViewBag.CardTitle = "كل المستخدمين";
+    Layout = "~/Views/Shared/_Dashbord.cshtml";
+}
+
+
+@* <partial name="/Views/Shared/_Toster.cshtml"/> will set toster at all CRUD at dashboard body*@
+
+<div>
+    <a class="btn btn-primary" href="/Identity/Account/Register" >تسجيل مستخدم جديد</a>
+</div>
+<hr />
+<table class="table table-hover">
+    <thead>
+        <tr class="text-center">
+            <td>الاسم</td>
+            <td>البريد الاليكتروني</td>
+            <td>رقم الهاتف</td>
+            <td>الاعدادات</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="text-center">
+                <td>@item.Name</td>
+                <td>@item.Email</td>
+                <td>@item.PhoneNumber</td>
+                <td>
+                    @if(item.LockoutEnd == null || item.LockoutEnd < DateTime.Now)
+                    {
+                        <a class="btn btn-success" asp-route-id="@item.Id" asp-action="LockUnLock">
+                            <i class="fa fa-lock-open"></i>
+
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-danger" asp-route-id="@item.Id" asp-action="LockUnLock">
+                            <i class="fa fa-lock"></i>
+
+                        </a>
+                    }
+                    
+                    <a class="btn btn-danger" asp-route-id="@item.Id" asp-action="Delete" >حذف</a>
+
+                </td>
+            </tr>
+        }
+
+    </tbody>
+ </table>

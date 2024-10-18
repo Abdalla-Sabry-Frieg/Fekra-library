@@ -1,0 +1,37 @@
+﻿@page
+@model ConfirmEmailChangeModel
+@{
+    ViewData["Title"] = "تأكيد تغيير البريد الإلكتروني";
+}
+
+<div class="container mt-5">
+    <header class="text-center">
+        <h1>@ViewData["Title"]</h1>
+    </header>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="alert alert-info text-center">
+                <partial name="_StatusMessage" model="Model.StatusMessage" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .container {
+            padding: 0 15px;
+        }
+
+        .alert {
+            font-size: 1.2rem;
+        }
+
+        @@media (max-width: 767.98px) {
+            .alert {
+                font-size: 1rem;
+            }
+        }
+    </style>
+}

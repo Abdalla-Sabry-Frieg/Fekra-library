@@ -1,0 +1,49 @@
+﻿@model ProductsViewModel
+@{
+    ViewBag.PageTitle = "النحكم في المنتجات";
+    ViewBag.CardTitle = "كل المنتجات";
+    Layout = "~/Views/Shared/_Dashbord.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between mb-3">
+        <a class="btn btn-primary" asp-action="create">انشاء</a>
+    </div>
+    <hr />
+    <div class="table-responsive">
+        <table id="myTable" class="table table-hover text-center">
+            <thead>
+                <tr class="text-center">
+                    <th style="width:10%">الصوره</th>
+                    <th style="width:20%">الاسم</th>
+                    <th style="width:20%">الوصف</th>
+                    <th style="width:10%">السعر</th>
+                    <th style="width:10%">اسم الفئه</th>
+                    <th style="width:15%">معاد الانشاء</th>
+                    <th style="width:20%">التحكم</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.products)
+                {
+                    <tr class="text-center">
+                        <td><img src="~/@item.Image" style="height:50px; width:50px;" alt="@item.Name" /></td>
+                        <td>@item.Name</td>
+                        <td>@item.Description</td>
+                        <td>@item.Price.ToString("c")</td>
+                        <td>@item.Category.Name</td>
+                        <td>@item.CreatedAt</td>
+                        <td >
+                            <a class="btn btn-success btn-sm" asp-route-id="@item.Id" asp-action="Edit" asp-asp-controller="product">تعديل</a>
+                            <a class="btn btn-danger btn-sm" onclick="Delete('@item.Id')" asp-route-id="@item.Id" asp-action="DeleteProduct" asp-asp-controller="product">حذف</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Models/Products.js"></script>
+}
